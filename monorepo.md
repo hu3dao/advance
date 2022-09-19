@@ -38,6 +38,7 @@ pnpm init
 ```
 shamefully-hoist=true
 strict-peer-dependencies=false
+ignore-workspace-root-check=true
 ```
 + shamefully-hoist 是否提升依赖，如果某些工具仅在根目录的node_modules时才有效，可以将shamefully-hoist设置为true来提升那些不在根目录的node_modules，就是将你安装的依赖包的依赖包的依赖包的...都放到同一级别（扁平化）。说白了就是不设置为true有些包就有可能会出问题。
 + strict-peer-dependencies 当 peerDependencies错误时，命令是否成功
