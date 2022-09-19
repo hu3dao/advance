@@ -5,9 +5,12 @@
   "main": "index.js",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev:app": "pnpm -F @advance/multi-page-app dev"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.6.4"
+  }
 }
