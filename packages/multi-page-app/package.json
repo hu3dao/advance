@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
+    "dev": "node ./build/commands/dev.js",
+    "build": "node ./build/commands/build.js",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -16,6 +16,8 @@
     "@advance/build": "workspace:*",
     "@types/node": "^18.7.18",
     "@vitejs/plugin-vue": "^3.1.0",
+    "chalk": "^5.0.1",
+    "del": "^7.0.0",
     "vite": "^3.1.0",
     "vite-plugin-html": "^3.2.0",
     "vue-tsc": "^0.40.4"

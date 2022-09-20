@@ -241,6 +241,188 @@ export default defineConfig({
     })
   ],
 })
-
 ```
+## 实现按需打包
+这里的按需打包是指可以通过命令行动态设置打包某一个页面或几个页面或全部页面，vite提供了JavaScript API，开发者可以调用对应的函数进行打包或启动dev-serve，详情可以看[官方文档](https://cn.vitejs.dev/guide/api-javascript.html)
 
+删除vite.config.ts，在根目录下创建build文件夹，这个文件夹存放着我们的项目启动dev-server和打包的代码，目录结构如下
+```xml
+|── build
+|   |── commands # 命令相关
+|   |   |── build.js # 打包逻辑
+|   |   |── dev.js # 本地dev-server逻辑
+|   |── common # 公共代码逻辑
+|   |   |── constant.js # 常量
+|   |   |── utils.js # 工具函数
+```
+修改package.json
+```json
+"scripts": {
+  "dev": "node ./build/commands/dev.js",
+  "build": "node ./build/commands/build.js",
+},
+```
+编写constant.js
+```js
+import {resolve} from 'path'
+
+// 当前Node.js进程执行时的文件夹地址
+const CWD = process.cwd()
+const PAGES_PATH = resolve(CWD, 'src/pages')
+
+export {
+  CWD,
+  PAGES_PATH
+}
+```
+编写dev.js，使用函数调用方法启动dev-serve，成功后不会有输出会让人误以为卡死了，所以需要我们自己使用chalk美化字体输出到控制台
+```js
+import {createServer} from 'vite'
+import fs from 'fs'
+import vue from '@vitejs/plugin-vue'
+import {createHtmlPlugin} from 'vite-plugin-html'
+import {PAGES_PATH, INJECTSCRIPT} from '../common/constant.js'
+import chalk from 'chalk'
+
+const server = await createServer({
+  // 任何合法的用户配置选项，加上 `mode` 和 `configFile`
+  configFile: false,
+  root: PAGES_PATH,
+  plugins: [
+    vue(),
+    createHtmlPlugin({
+      pages: fs.readdirSync(PAGES_PATH).map(page => {
+        return {
+          entry: `/${page}/main.ts`,
+          filename: `${page}.html`,
+          template: `src/pages/${page}/index.html`,
+          injectOptions: {
+            data: {
+              injectScript: INJECTSCRIPT
+            }
+          }
+        }
+      })
+    })
+  ]
+})
+
+const res = await server.listen()
+console.log(chalk.green(`服务启动在: ${res.resolvedUrls.local}`));
+```
+编写build.js
+```js
+import {build} from 'vite'
+import {resolve} from 'path'
+import fs from 'fs'
+import {deleteSync} from 'del'
+import vue from '@vitejs/plugin-vue'
+import {createHtmlPlugin} from 'vite-plugin-html'
+import { CWD, INJECTSCRIPT, PAGES_PATH } from '../common/constant.js'
+import chalk from 'chalk'
+import {parseArgs} from '../common/utils.js'
+
+let argvArr = []
+
+if (process.env.npm_config_argv) { // 通过 npm run xx 调用
+  argvArr = JSON.parse(process.env.npm_config_argv).original.slice(2);
+} else { // 通过 node xxx 调用
+  argvArr = process.argv.slice(2);
+}
+
+
+const argsMap = parseArgs(argvArr)
+
+let pages = argsMap.page
+if (!pages) {
+  console.log(chalk.red('请输入需要打包的页面'));
+  // 退出node进程
+  process.exit(0)
+}
+pages = pages === 'all' ? fs.readdirSync(PAGES_PATH) : pages.split(',')
+
+pages.forEach(async (page) => {
+  const entry = resolve(CWD, `src/pages/${page}/index.html`)
+  // 判断文件是否存在
+  const isExist = fs.existsSync(entry)
+  if(!isExist) {
+    console.log(chalk.red(`${page}的入口文件不存在`));
+    return 
+  }
+  const outDir = resolve(CWD, `dist/${page}`)
+  // 删除之前打包的文件
+  deleteSync(outDir)
+  try {
+    const res = await build({
+      root: resolve(PAGES_PATH, page),
+      base: './',
+      plugins: [
+        vue(),
+        createHtmlPlugin({
+          entry: '/main.ts',
+          template: 'index.html',
+          inject: {
+            data: {
+              injectScript: INJECTSCRIPT
+            }
+          }
+        })
+      ],
+      build: {
+        outDir
+      }
+    })
+  } catch (error) {
+    console.log(chalk.red(`${page}打包失败,失败原因: ${error}`));
+  }
+})
+```
+## 测试按需打包
+执行下面的命令，测试dev-server
+```shell
+pnpm dev
+```
+执行下面的命令，测试打包
++ --page=page-1 - 单独打包page-1
++ --page=page-1,page-2 - 打包page-1和page-2，参数使用英文逗号隔开
++ --page=all - 打包所有的包，通过fs这个库找到pages下所有的包
+```shell
+pnpm build --page=page-1,page-2
+```
+打包结果：
+
+![打包结果](./public//%E6%89%93%E5%8C%85%E7%BB%93%E6%9E%9C.png)
+## 优化
+本篇文章重点是介绍如何使用Vite的JavaScript API进行dev-server和打包以及如何按需打包，还缺失了很多的东西：
++ Eslint - 代码格式校验
++ StyleLint - css代码格式校验
++ 移动端适配 - rem/vw
++ husky - 代码提交前校验钩子
++ axios - 请求库
++ 组件库
++ ...
+
+这部分内容可以参考我之前写的文章[从零创建vue3+vite+ts项目](https://juejin.cn/post/7128224846210662436#heading-13)
+
+打包部分的代码也需要优化，这将会是我们从零系列第三期的内容，[从零单排：基于vite+vue3实现多入口打包插件]()，届时我们再将打包部分的代码进行优化，使用TS进行开发，打包成插件并发布
+## 总结
+我们的目标是：搞事，搞事，还是TM的搞事
+
+本系列的代码都已上传到[github](https://github.com/hu3dao/advance)，如有需要可自行下载
+
+如果你觉得文章不错，不妨：
++ 点赞-让更多人也能够看到这篇文章
++ 关注-防止找不到我了。。。
+## 文档
+[从零单排：前端进阶之路](../../README.md)系列全部文章
+1. [从零单排：使用pnpm创建monorepo](../../monorepo.md)
+2. [从零单排：基于vite+vue3搭建一个多入口的移动端项目（支持单入口、多入口和全部入口的打包）](./README.md)
+3. 从零单排：基于vite+vue3实现多入口打包插件---敬请期待
+4. 从零单排：搭建一个属于自己的脚手架---敬请期待
+
+[打个广告]()
++ [移动端兼容性问题及解决方案汇总](https://juejin.cn/post/7103835385280593957)
++ [基于vue2.x+better-scroll实现的下拉刷新上拉加载组件](https://juejin.cn/post/7104597819599618062)
++ [webpack5学习指南-入门篇](https://juejin.cn/post/7108569190230917128)
++ [从零创建vue3+vite+ts项目](https://juejin.cn/post/7128224846210662436)
++ [如何“优雅”的实现自定义样式弹幕功能](https://juejin.cn/post/7135023569259462692)
