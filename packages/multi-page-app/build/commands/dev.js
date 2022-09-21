@@ -4,6 +4,19 @@ import vue from '@vitejs/plugin-vue'
 import {createHtmlPlugin} from 'vite-plugin-html'
 import {PAGES_PATH, INJECTSCRIPT} from '../common/constant.js'
 import chalk from 'chalk'
+import {parseArgs} from '../common/utils.js'
+
+let argvArr = []
+
+if (process.env.npm_config_argv) { // 通过 npm run xx 调用
+  argvArr = JSON.parse(process.env.npm_config_argv).original.slice(2);
+} else { // 通过 node xxx 调用
+  argvArr = process.argv.slice(2);
+}
+
+const argsMap = parseArgs(argvArr)
+
+let open = argsMap.open ? `/${argsMap.open}/index.html` : false
 
 const server = await createServer({
   // 任何合法的用户配置选项，加上 `mode` 和 `configFile`
@@ -25,7 +38,10 @@ const server = await createServer({
         }
       })
     })
-  ]
+  ],
+  server: {
+    open 
+  }
 })
 
 try {
