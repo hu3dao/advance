@@ -4,11 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "node ./build/commands/dev.js",
-    "build": "node ./build/commands/build.js",
+    "dev": "adv-build dev",
+    "build": "adv-build build",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vitejs/plugin-legacy": "^2.2.0",
     "vue": "^3.2.37",
     "vue-router": "^4.1.5"
   },
@@ -18,6 +19,7 @@
     "@vitejs/plugin-vue": "^3.1.0",
     "chalk": "^5.0.1",
     "del": "^7.0.0",
+    "unplugin-auto-import": "^0.11.2",
     "vite": "^3.1.0",
     "vite-plugin-html": "^3.2.0",
     "vue-tsc": "^0.40.4"

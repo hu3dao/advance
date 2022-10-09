@@ -6,12 +6,15 @@
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "dev:app": "pnpm -F @advance/multi-page-app dev",
-    "build:app": "pnpm -F @advance/multi-page-app build"
+    "build:app": "pnpm -F @advance/multi-page-app build",
+    "dev:build": "pnpm -F @advance/build dev",
+    "build:build": "pnpm -F @advance/build build"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "typescript": "^4.6.4"
-  }
+  },
+  "dependencies": {}
 }

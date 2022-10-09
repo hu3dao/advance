@@ -2,11 +2,23 @@
   "name": "@advance/build",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "type": "module",
+  "main": "lib/index.js",
+  "bin": {
+    "adv-build": "./bin.js"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "tsc --watch",
+    "build": "rimraf ./lib && tsc"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^18.7.18",
+    "@vitejs/plugin-vue": "^3.1.0",
+    "commander": "^9.4.0",
+    "vite": "^3.1.0",
+    "vite-plugin-html": "^3.2.0"
+  }
 }

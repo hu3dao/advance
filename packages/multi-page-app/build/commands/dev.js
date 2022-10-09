@@ -46,8 +46,9 @@ const server = await createServer({
 
 try {
   const res = await server.listen()
-  console.log(chalk.green(`服务启动在: ${res.resolvedUrls.local}`));
+  // console.log(chalk.green(`服务启动在: ${res.resolvedUrls.local}`));
+  server.printUrls()
 } catch (error) {
-  console.log(chalk.red(`启动失败,失败原因: ${error}`));
+  // console.log(chalk.red(`启动失败,失败原因: ${error}`));
 }
 

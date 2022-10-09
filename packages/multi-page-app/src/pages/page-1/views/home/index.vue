@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import {useRouter} from 'vue-router'
+// import {useRouter} from 'vue-router'
 const router = useRouter()
 const goAbout = () => {
   router.push('/about')
@@ -7,7 +7,7 @@ const goAbout = () => {
 </script>
 
 <template>
-  home
+  home11
   <button @click="goAbout">go about</button>
 </template>
 
