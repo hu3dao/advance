@@ -14,9 +14,8 @@ program
     .description('Compile components in production mode')
     .option('--all', 'build all page', false)
     .option('--pages <pages...>', 'build page list')
-    .action(async ({ all, pages }) => {
-    console.log(all);
-    console.log(pages);
-    console.log(123);
+    .action(async (options) => {
+    const { build } = await import('./commands/build.js');
+    build(options);
 });
 program.parse();

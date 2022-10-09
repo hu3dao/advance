@@ -16,34 +16,38 @@ if(fs.existsSync(configFileOfTs)) {
 
 
 export async function dev(open: string | false) {
-  let openPath: string | false = false
-  if(open && fs.existsSync(resolve(PAGES_PATH, `./${open}/index.html`))) {
-    openPath = `/${open}/index.html`
-  }
-  const server = await createServer({
-    configFile,
-    root: PAGES_PATH,
-    plugins: [
-      vue(),
-      createHtmlPlugin({
-        pages: fs.readdirSync(PAGES_PATH).map(page => {
-          return {
-            entry: `/${page}/main.ts`,
-            filename: `${page}.html`,
-            template: `src/pages/${page}/index.html`,
-            injectOptions: {
-              data: {
-                injectScript: INJECTSCRIPT
+  try {
+    let openPath: string | false = false
+    if(open && fs.existsSync(resolve(PAGES_PATH, `./${open}/index.html`))) {
+      openPath = `/${open}/index.html`
+    }
+    const server = await createServer({
+      configFile,
+      root: PAGES_PATH,
+      plugins: [
+        vue(),
+        createHtmlPlugin({
+          pages: fs.readdirSync(PAGES_PATH).map(page => {
+            return {
+              entry: `/${page}/main.ts`,
+              filename: `${page}.html`,
+              template: `src/pages/${page}/index.html`,
+              injectOptions: {
+                data: {
+                  injectScript: INJECTSCRIPT
+                }
               }
             }
-          }
+          })
         })
-      })
-    ],
-    server: {
-      open: openPath
-    }
-  })
-  await server.listen();
-  server.printUrls();
+      ],
+      server: {
+        open: openPath
+      }
+    })
+    await server.listen();
+    server.printUrls();
+  } catch(err) {
+    console.log(err);
+  }
 }

@@ -14,34 +14,39 @@ else if (fs.existsSync(configFileOfJs)) {
     configFile = configFileOfJs;
 }
 export async function dev(open) {
-    let openPath = false;
-    if (open && fs.existsSync(resolve(PAGES_PATH, `./${open}/index.html`))) {
-        openPath = `/${open}/index.html`;
-    }
-    const server = await createServer({
-        configFile,
-        root: PAGES_PATH,
-        plugins: [
-            vue(),
-            createHtmlPlugin({
-                pages: fs.readdirSync(PAGES_PATH).map(page => {
-                    return {
-                        entry: `/${page}/main.ts`,
-                        filename: `${page}.html`,
-                        template: `src/pages/${page}/index.html`,
-                        injectOptions: {
-                            data: {
-                                injectScript: INJECTSCRIPT
-                            }
-                        }
-                    };
-                })
-            })
-        ],
-        server: {
-            open: openPath
+    try {
+        let openPath = false;
+        if (open && fs.existsSync(resolve(PAGES_PATH, `./${open}/index.html`))) {
+            openPath = `/${open}/index.html`;
         }
-    });
-    await server.listen();
-    server.printUrls();
+        const server = await createServer({
+            configFile,
+            root: PAGES_PATH,
+            plugins: [
+                vue(),
+                createHtmlPlugin({
+                    pages: fs.readdirSync(PAGES_PATH).map(page => {
+                        return {
+                            entry: `/${page}/main.ts`,
+                            filename: `${page}.html`,
+                            template: `src/pages/${page}/index.html`,
+                            injectOptions: {
+                                data: {
+                                    injectScript: INJECTSCRIPT
+                                }
+                            }
+                        };
+                    })
+                })
+            ],
+            server: {
+                open: openPath
+            }
+        });
+        await server.listen();
+        server.printUrls();
+    }
+    catch (err) {
+        console.log(err);
+    }
 }
