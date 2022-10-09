@@ -7,9 +7,13 @@ const goAbout = () => {
 </script>
 
 <template>
-  home11
-  <button @click="goAbout">go about</button>
+  <h1>home11</h1>
+  <van-button type="primary" @click="goAbout">go about</van-button>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+$color: #f90;
+h1 {
+  color: $color;
+}
 </style>
