@@ -1,9 +1,9 @@
 {
-  "name": "@advance/build",
+  "name": "adv-build",
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "main": "lib/index.js",
+  "main": "./bin.js",
   "bin": {
     "adv-build": "./bin.js"
   },
@@ -19,6 +19,7 @@
     "@vitejs/plugin-vue": "^3.1.0",
     "commander": "^9.4.0",
     "del": "^7.0.0",
+    "rimraf": "^3.0.2",
     "vite": "^3.1.0",
     "vite-plugin-html": "^3.2.0"
   }
