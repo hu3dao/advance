@@ -46,7 +46,7 @@ export async function build({ all, pages }) {
                 build: {
                     outDir
                 }
-            });
+            }).then();
         });
     }
     catch (error) {

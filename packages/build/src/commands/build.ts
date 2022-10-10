@@ -47,7 +47,7 @@ export async function build({all, pages}: {all?: boolean, pages?: string[]}) {
         build: {
           outDir
         }
-      })
+      }).then()
     })
   } catch (error) {
     console.log('error---', error);
