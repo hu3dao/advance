@@ -36,7 +36,7 @@
 [从零单排：前端进阶之路](./README.md)系列全部文章
 1. [从零单排：使用pnpm创建monorepo](./monorepo.md)
 2. [从零单排：基于vite+vue3搭建一个多入口的移动端项目（支持单入口、多入口和全部入口的打包）](./packages/multi-page-app/README.md)
-3. 从零单排：基于vite+vue3实现多入口打包插件---敬请期待
+3. [从零单排：基于vite+vue3实现多入口打包插件](./packages/build/README.md)
 4. 从零单排：搭建一个属于自己的脚手架---敬请期待
 
 [打个广告]()
