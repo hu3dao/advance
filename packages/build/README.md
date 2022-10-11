@@ -226,41 +226,39 @@ export async function dev(open: string | false) {
 }
 ```
 ### build.ts编码
-这个文件通过调用vite的build方法进行打包，为防止和我们的build函数冲突，给vite的build方法设置别名为viteBuild，我们的build函数根据参数来进行全部页面打包或部分页面打包。跟上面的dev.ts一样，我们会去找项目的vite配置文件并传递给vite提供的build函数中，
+这个文件通过调用vite的build方法进行打包，为防止和我们的build函数冲突，给vite的build方法设置别名为viteBuild，我们的build函数根据参数来进行全部页面打包或部分页面打包。跟上面的dev.ts一样，我们会去找项目的vite配置文件并传递给vite提供的build函数中，利用递归实现按顺序打包
 ```ts
-import {build as viteBuild} from 'vite'
-import {resolve} from 'path'
+import { build as viteBuild } from 'vite'
+import path from 'path'
 import { CWD, INJECTSCRIPT, PAGES_PATH, configFile } from '../common/constant.js'
 import fs from 'fs'
 import vue from '@vitejs/plugin-vue'
-import {createHtmlPlugin} from 'vite-plugin-html'
-import {deleteSync} from 'del'
+import { createHtmlPlugin } from 'vite-plugin-html'
+import { deleteSync } from 'del'
 import { isExist } from '../common/utils.js'
 
-export async function build({all, pages}: {all?: boolean, pages?: string[]}) {
-  try {
-    const buildPages = all ? fs.readdirSync(PAGES_PATH) : pages
-    if(!Array.isArray(buildPages)) {
-      console.log('请输入要打包的页面');
-      return
-    }
-    buildPages.forEach(async (page: string) => {
+const compile = (page: string) => {
+  return new Promise(async (resolve, reject) => {
+    try {
       // 不是文件夹的直接跳过
-      if(!fs.statSync(resolve(PAGES_PATH, `./${page}`)).isDirectory()) {
+      if (!fs.statSync(path.resolve(PAGES_PATH, `./${page}`)).isDirectory()) {
+        reject()
         return
       }
-      const entry = resolve(PAGES_PATH, `./${page}/index.html`)
+      console.log(`开始打包${page}`);
+      const entry = path.resolve(PAGES_PATH, `./${page}/index.html`)
       // 判断入口文件是否存在
-      if(!isExist(entry)) {
+      if (!isExist(entry)) {
         console.log(`${page}的入口文件不存在`);
-        return 
+        reject()
+        return
       }
-      const outDir = resolve(CWD, `./dist/${page}`)
-      // 删除之前的打包资源
+      const outDir = path.resolve(CWD, `./dist/${page}`)
+      // 删除旧的打包资源
       deleteSync(outDir)
       await viteBuild({
         configFile,
-        root: resolve(PAGES_PATH, page),
+        root: path.resolve(PAGES_PATH, page),
         base: './',
         plugins: [
           vue(),
@@ -278,11 +276,35 @@ export async function build({all, pages}: {all?: boolean, pages?: string[]}) {
           outDir
         }
       })
-    })
-  } catch (error) {
-    console.log('error---', error);
-  }
+      console.log(`${page}打包成功`);
+      resolve(`${page}打包成功`)
+    } catch (err) {
+      console.log('err====>', err);
+
+      reject(err)
+    }
+  })
 }
+
+export async function build({ all, pages }: { all?: boolean, pages?: string[] }) {
+  const buildPages = all ? fs.readdirSync(PAGES_PATH) : pages
+  if (!Array.isArray(buildPages)) {
+    console.log('请输入要打包的页面');
+    return
+  }
+  // 递归实现按顺序打包
+  const runner = async () => {
+    if (!buildPages || !buildPages.length) return
+    const page = buildPages.shift() as string
+    try {
+      await compile(page)
+    } catch (error) {
+    }
+    runner()
+  }
+  runner()
+}
+
 ```
 ### 注意
 通过上面的代码，我们会发现，在引入本地自己写的ts文件时，我们加上了.js的后缀，你可能会疑惑为什么这样做，因为tsc在将ts文件编译时，不会给引用的文件加上后缀，而我们又在package.json设置了type为module，这样导致，node执行编译后js文件会提示找不到对应的引入文件会报错，所以我们在ts编码时需要引入自己写的ts文件就加上.js为后缀
