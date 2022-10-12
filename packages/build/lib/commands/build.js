@@ -60,6 +60,7 @@ export async function build({ all, pages }) {
         console.log('请输入要打包的页面');
         return;
     }
+    // 递归实现按顺序打包
     const runner = async () => {
         if (!buildPages || !buildPages.length)
             return;

@@ -21,7 +21,7 @@ export async function dev(open) {
                         return {
                             entry: `/${page}/main.ts`,
                             filename: `${page}.html`,
-                            template: `src/pages/${page}/index.html`,
+                            template: `./src/pages/${page}/index.html`,
                             injectOptions: {
                                 data: {
                                     injectScript: INJECTSCRIPT

@@ -1,15 +1,15 @@
-import {createServer} from 'vite'
+import { createServer } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import {PAGES_PATH, INJECTSCRIPT, configFile} from '../common/constant.js'
-import {resolve} from 'path'
+import { PAGES_PATH, INJECTSCRIPT, configFile, CWD } from '../common/constant.js'
+import { resolve } from 'path'
 import fs from 'fs'
-import {createHtmlPlugin} from 'vite-plugin-html'
+import { createHtmlPlugin } from 'vite-plugin-html'
 import { isExist } from '../common/utils.js'
 
 export async function dev(open: string | false) {
   try {
     let openPath: string | false = false
-    if(open && isExist(resolve(PAGES_PATH, `./${open}/index.html`))) {
+    if (open && isExist(resolve(PAGES_PATH, `./${open}/index.html`))) {
       openPath = `/${open}/index.html`
     }
     const server = await createServer({
@@ -22,7 +22,7 @@ export async function dev(open: string | false) {
             return {
               entry: `/${page}/main.ts`,
               filename: `${page}.html`,
-              template: `src/pages/${page}/index.html`,
+              template: `./src/pages/${page}/index.html`,
               injectOptions: {
                 data: {
                   injectScript: INJECTSCRIPT
@@ -38,7 +38,7 @@ export async function dev(open: string | false) {
     })
     await server.listen();
     server.printUrls();
-  } catch(err) {
+  } catch (err) {
     console.log(err);
   }
 }
