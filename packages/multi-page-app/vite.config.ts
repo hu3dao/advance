@@ -1,5 +1,5 @@
-import {defineConfig} from 'vite'
-import {resolve} from 'path'
+import { defineConfig } from 'vite'
+import { resolve } from 'path'
 import legacy from '@vitejs/plugin-legacy';
 import AutoImport from 'unplugin-auto-import/vite'
 
@@ -16,7 +16,8 @@ export default defineConfig({
       imports: [
         'vue',
         'vue-router'
-      ]
+      ],
+      dts: resolve(__dirname, './auto-imports.d.ts')
     })
   ],
   server: {

@@ -12,32 +12,50 @@ export async function dev(open: string | false) {
     if (open && isExist(resolve(PAGES_PATH, `./${open}/index.html`))) {
       openPath = `/${open}/index.html`
     }
-    const pages = fs.readdirSync(PAGES_PATH).map(page => {
-      return {
+
+    // 解决vite-plugin-html在pages文件夹下只有一个文件夹（一个入口文件）时认为是单页应用的BUG：打开页面报404错误
+    const pageList = fs.readdirSync(PAGES_PATH)
+    let userOptions: any = undefined
+    if (pageList.length < 1) {
+      console.log(`pages文件夹下没有入口`);
+      return
+    } else if (pageList.length === 1) {
+      const page = pageList[0]
+      userOptions = {
         entry: `/${page}/main.ts`,
-        filename: `${page}.html`,
-        template: `./src/pages/${page}/index.html`,
-        injectOptions: {
+        template: `./${page}/index.html`,
+        inject: {
           data: {
             injectScript: INJECTSCRIPT
           }
         }
       }
-    })
-    // 解决vite-plugin-html插件在pages只有一个文件或文件夹时识别单页面的BUG
-    pages.length === 1 && (pages.push({ entry: '', filename: '', template: '', injectOptions: { data: { injectScript: '' } } }))
+    } else if (pageList.length > 1) {
+      userOptions = {
+        pages: pageList.map(page => {
+          return {
+            entry: `/${page}/main.ts`,
+            filename: `${page}.html`,
+            template: `./src/pages/${page}/index.html`,
+            injectOptions: {
+              data: {
+                injectScript: INJECTSCRIPT
+              }
+            }
+          }
+        })
+      }
+    }
     const server = await createServer({
       configFile,
       root: PAGES_PATH,
       plugins: [
         vue(),
-        createHtmlPlugin({
-          pages
-        })
+        createHtmlPlugin(userOptions)
       ],
       server: {
         open: openPath
-      }
+      },
     })
     await server.listen();
     server.printUrls();
