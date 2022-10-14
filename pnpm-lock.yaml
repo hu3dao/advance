@@ -12,6 +12,7 @@ importers:
     specifiers:
       '@types/node': ^18.7.18
       '@vitejs/plugin-vue': ^3.1.0
+      chalk: ^5.0.1
       commander: ^9.4.0
       del: ^7.0.0
       rimraf: ^3.0.2
@@ -20,6 +21,7 @@ importers:
     dependencies:
       '@types/node': 18.7.18
       '@vitejs/plugin-vue': 3.1.0_vite@3.1.2
+      chalk: 5.0.1
       commander: 9.4.0
       del: 7.0.0
       rimraf: 3.0.2
@@ -423,7 +425,6 @@ packages:
   /chalk/5.0.1:
     resolution: {integrity: sha512-Fo07WOYGqMfCWHOzSXOt2CxDbC6skS/jO9ynEcmpANMoPrD+W1r1K6Vx7iNm+AQmETU1Xr2t+n8nzkV9t6xh3w==}
     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
-    dev: true
 
   /chokidar/3.5.3:
     resolution: {integrity: sha512-Dr3sfKRP6oTcjf2JmUmFJfeVMvXBdegxB0iVQ5eb2V10uFJUCAS8OByZdVAyVb8xXNz3GjjTgj9kLWsZTqE6kw==}

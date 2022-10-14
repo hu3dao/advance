@@ -18,4 +18,13 @@ program
     const { build } = await import('./commands/build.js'); // 我们在这里异步引入build函数，执行
     build(options);
 });
+program
+    .command('create') // 注册create命令
+    .description('Create pages base on template')
+    .option('--names <names...>', 'create pages name')
+    .option('--temp <temp>', 'target template')
+    .action(async (options) => {
+    const { create } = await import('./commands/create.js');
+    create(options);
+});
 program.parse();

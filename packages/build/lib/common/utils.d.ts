@@ -1,2 +1,3 @@
 declare const isExist: (path: string) => boolean;
-export { isExist };
+declare const copy: (srcDir: string, desDir: string) => void;
+export { isExist, copy };

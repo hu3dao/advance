@@ -1,5 +1,6 @@
 import { resolve } from 'path';
 import { isExist } from './utils.js';
+import { fileURLToPath } from 'url';
 // 当前Node.js进程执行时的文件夹地址
 const CWD = process.cwd();
 // 存放多页面的路径
@@ -18,5 +19,7 @@ if (isExist(configFileOfTs)) {
 else if (isExist(configFileOfJs)) {
     configFile = configFileOfJs;
 }
-export { CWD, PAGES_PATH, INJECTSCRIPT, configFile // vite配置文件的路径
- };
+// 模板的路径
+const TEMPLATE_PATH = resolve(fileURLToPath(import.meta.url), '../../../template');
+export { CWD, PAGES_PATH, INJECTSCRIPT, configFile, // vite配置文件的路径
+TEMPLATE_PATH };

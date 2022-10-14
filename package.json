@@ -7,6 +7,7 @@
     "preinstall": "npx only-allow pnpm",
     "dev:app": "pnpm -F @advance/multi-page-app dev",
     "build:app": "pnpm -F @advance/multi-page-app build",
+    "create:app": "pnpm -F @advance/multi-page-app run create",
     "dev:build": "pnpm -F @advance/build dev",
     "build:build": "pnpm -F @advance/build build"
   },

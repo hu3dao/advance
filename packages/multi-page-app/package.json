@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "adv-build dev",
     "build": "adv-build build",
-    "preview": "vite preview"
+    "create": "adv-build create"
   },
   "dependencies": {
     "@vitejs/plugin-legacy": "^2.2.0",
