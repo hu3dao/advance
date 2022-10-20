@@ -1,6 +1,6 @@
 import { resolve } from 'path';
 import { isExist } from './utils.js';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 // 当前Node.js进程执行时的文件夹地址
 const CWD = process.cwd();
 // 存放多页面的路径
@@ -21,5 +21,14 @@ else if (isExist(configFileOfJs)) {
 }
 // 模板的路径
 const TEMPLATE_PATH = resolve(fileURLToPath(import.meta.url), '../../../template');
+const MPA_CONFIG_FILE = resolve(CWD, 'mpa.config.mjs');
+const mpaConfig = await (async () => {
+    try {
+        return (await import(pathToFileURL(MPA_CONFIG_FILE).href)).default;
+    }
+    catch (error) {
+        return {};
+    }
+})();
 export { CWD, PAGES_PATH, INJECTSCRIPT, configFile, // vite配置文件的路径
-TEMPLATE_PATH };
+TEMPLATE_PATH, mpaConfig };

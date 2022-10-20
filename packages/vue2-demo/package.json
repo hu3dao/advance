@@ -1,0 +1,20 @@
+{
+  "name": "vue2-demo",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "adv-build dev",
+    "build": "adv-build build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@advance/build": "workspace:*",
+    "vite": "^3.1.0",
+    "vite-plugin-vue2": "^2.0.2",
+    "vue-template-compiler": "2.6.14"
+  },
+  "dependencies": {
+    "vue": "2.6.14"
+  }
+}

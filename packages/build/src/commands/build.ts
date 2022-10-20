@@ -1,8 +1,7 @@
 import { build as viteBuild } from 'vite'
 import path from 'path'
-import { CWD, INJECTSCRIPT, PAGES_PATH, configFile } from '../common/constant.js'
+import { CWD, INJECTSCRIPT, PAGES_PATH, configFile, mpaConfig } from '../common/constant.js'
 import fs from 'fs'
-import vue from '@vitejs/plugin-vue'
 import { createHtmlPlugin } from 'vite-plugin-html'
 import { deleteSync } from 'del'
 import { isExist } from '../common/utils.js'
@@ -16,7 +15,7 @@ const compile = (page: string) => {
         return
       }
       console.log(`开始打包${page}`);
-      const entry = path.resolve(PAGES_PATH, `./${page}/index.html`)
+      const entry = path.resolve(PAGES_PATH, `./${page}/${mpaConfig.template}`)
       // 判断入口文件是否存在
       if (!isExist(entry)) {
         console.log(`${page}的入口文件不存在`);
@@ -31,13 +30,12 @@ const compile = (page: string) => {
         root: path.resolve(PAGES_PATH, page),
         base: './',
         plugins: [
-          vue(),
           createHtmlPlugin({
-            entry: '/main.ts',
-            template: 'index.html',
+            entry: `/${mpaConfig.entry}`,
+            template: `${mpaConfig.template}`,
             inject: {
               data: {
-                injectScript: INJECTSCRIPT
+                injectScript: `${INJECTSCRIPT}${mpaConfig.injectScript}`
               }
             }
           })
