@@ -67,8 +67,8 @@ const compile = (page, PAGES_PATH, template, entry, injectScript) => {
         }
     });
 };
-export async function build({ all, page }) {
-    const { root = 'src/pages', template = 'index.html', entry = 'main.ts', injectScript = '', copyStatic } = await resolveConfig('build', 'production');
+export async function build({ all, page, mode }) {
+    const { root = 'src/pages', template = 'index.html', entry = 'main.ts', injectScript = '', copyStatic } = await resolveConfig('build', mode || 'production');
     const PAGES_PATH = path.resolve(CWD, root);
     const buildPages = all ? fs.readdirSync(PAGES_PATH) : page;
     if (!Array.isArray(buildPages)) {

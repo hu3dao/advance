@@ -1,1 +1,4 @@
-export declare function dev(open: string | false): Promise<void>;
+export declare function dev({ open, mode }: {
+    open: string | false;
+    mode?: string;
+}): Promise<void>;

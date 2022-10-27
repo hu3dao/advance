@@ -6,6 +6,7 @@ export default ({ command, mode }) => {
   // } else if(command === 'build') {
   // build命令下的配置
   // }
+  console.log(mode);
   return {
     "root": "src/pages",  // 入口目录，相对于根目录
     "entry": "main.ts",

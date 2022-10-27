@@ -4,10 +4,10 @@ import { resolve } from 'path';
 import fs from 'fs';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import { isExist, resolveConfig } from '../common/utils.js';
-export async function dev(open) {
+export async function dev({ open, mode }) {
     try {
         let openPath = false;
-        const { root = 'src/pages', template = 'index.html', entry = 'main.ts', injectScript = '' } = await resolveConfig('dev', 'development');
+        const { root = 'src/pages', template = 'index.html', entry = 'main.ts', injectScript = '' } = await resolveConfig('dev', mode || 'development');
         const PAGES_PATH = resolve(CWD, root);
         if (open && isExist(resolve(PAGES_PATH, `./${open}/${template}`))) {
             openPath = `/${open}/${template}`;

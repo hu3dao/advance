@@ -5,15 +5,15 @@ import fs from 'fs'
 import { createHtmlPlugin } from 'vite-plugin-html'
 import { isExist, resolveConfig } from '../common/utils.js'
 
-export async function dev(open: string | false) {
+export async function dev({ open, mode }: { open: string | false, mode?: string }) {
   try {
     let openPath: string | false = false
     const {
       root = 'src/pages',
-      template = 'index.html', 
-      entry = 'main.ts', 
+      template = 'index.html',
+      entry = 'main.ts',
       injectScript = ''
-    } = await resolveConfig('dev', 'development')
+    } = await resolveConfig('dev', mode || 'development')
     const PAGES_PATH = resolve(CWD, root)
     if (open && isExist(resolve(PAGES_PATH, `./${open}/${template}`))) {
       openPath = `/${open}/${template}`
