@@ -1,12 +1,27 @@
 import { build as viteBuild } from 'vite'
 import path from 'path'
-import { CWD, INJECTSCRIPT, PAGES_PATH, configFile, mpaConfig } from '../common/constant.js'
+import { CWD, INJECTSCRIPT, PAGES_PATH, configFile } from '../common/constant.js'
 import fs from 'fs'
 import { createHtmlPlugin } from 'vite-plugin-html'
 import { deleteSync } from 'del'
-import { isExist } from '../common/utils.js'
+import { isExist, resolveConfig } from '../common/utils.js'
+import chalk from 'chalk'
+import { ICopyStatic, IMpaConfig } from '../types/index.js'
 
-const compile = (page: string) => {
+// 拷贝静态资源
+const copy = (copyStatic: ICopyStatic[] | undefined) => {
+  if(!copyStatic) return
+  copyStatic.forEach(dir => {
+    const source = path.resolve(CWD, dir.from)
+    const destination = path.resolve(CWD, dir.to)
+    if(!isExist(source)) {
+      return
+    }
+    fs.cpSync(path.resolve(CWD, dir.from), path.resolve(CWD, dir.to), {recursive: true})
+  })  
+}
+// 打包操作
+const compile = (page: string, template: string, entry: string, injectScript: string) => {
   return new Promise(async (resolve, reject) => {
     try {
       // 不是文件夹的直接跳过
@@ -14,11 +29,11 @@ const compile = (page: string) => {
         reject()
         return
       }
-      console.log(`开始打包${page}`);
-      const entry = path.resolve(PAGES_PATH, `./${page}/${mpaConfig.template}`)
+      console.log(chalk.green(`开始打包${page}`));
+      const entry = path.resolve(PAGES_PATH, `./${page}/${template}`)
       // 判断入口文件是否存在
       if (!isExist(entry)) {
-        console.log(`${page}的入口文件不存在`);
+        console.log(chalk.red(`${page}的入口文件不存在`));
         reject()
         return
       }
@@ -31,11 +46,11 @@ const compile = (page: string) => {
         base: './',
         plugins: [
           createHtmlPlugin({
-            entry: `/${mpaConfig.entry}`,
-            template: `${mpaConfig.template}`,
+            entry: `/${entry}`,
+            template: `${template}`,
             inject: {
               data: {
-                injectScript: `${INJECTSCRIPT}${mpaConfig.injectScript}`
+                injectScript: `${INJECTSCRIPT}${injectScript}`
               }
             }
           })
@@ -44,31 +59,38 @@ const compile = (page: string) => {
           outDir
         }
       })
-      console.log(`${page}打包成功`);
+      console.log(chalk.green(`${page}打包成功`));
       resolve(`${page}打包成功`)
     } catch (err) {
-      console.log('err====>', err);
-
+      console.log(chalk.red(err));
       reject(err)
     }
   })
 }
-
 export async function build({ all, pages }: { all?: boolean, pages?: string[] }) {
   const buildPages = all ? fs.readdirSync(PAGES_PATH) : pages
   if (!Array.isArray(buildPages)) {
-    console.log('请输入要打包的页面');
+    console.log(chalk.red('请输入要打包的页面'));
     return
   }
+  const {
+    template = 'index.html', 
+    entry = 'main.ts', 
+    injectScript = '',
+    copyStatic
+  } = await resolveConfig('build', 'production')
+  
   // 递归实现按顺序打包
   const runner = async () => {
     if (!buildPages || !buildPages.length) return
     const page = buildPages.shift() as string
     try {
-      await compile(page)
+      await compile(page, template, entry, injectScript)
     } catch (error) {
     }
     runner()
   }
   runner()
+  // 拷贝文件
+  copy(copyStatic)
 }

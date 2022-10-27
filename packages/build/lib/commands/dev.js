@@ -1,14 +1,15 @@
 import { createServer } from 'vite';
-import { PAGES_PATH, INJECTSCRIPT, configFile, mpaConfig } from '../common/constant.js';
+import { PAGES_PATH, INJECTSCRIPT, configFile } from '../common/constant.js';
 import { resolve } from 'path';
 import fs from 'fs';
 import { createHtmlPlugin } from 'vite-plugin-html';
-import { isExist } from '../common/utils.js';
+import { isExist, resolveConfig } from '../common/utils.js';
 export async function dev(open) {
     try {
         let openPath = false;
-        if (open && isExist(resolve(PAGES_PATH, `./${open}/${mpaConfig.template}`))) {
-            openPath = `/${open}/${mpaConfig.template}`;
+        const { template = 'index.html', entry = 'main.ts', injectScript = '' } = await resolveConfig('dev', 'development');
+        if (open && isExist(resolve(PAGES_PATH, `./${open}/${template}`))) {
+            openPath = `/${open}/${template}`;
         }
         // 解决vite-plugin-html在pages文件夹下只有一个文件夹（一个入口文件）时认为是单页应用的BUG：打开页面报404错误
         const pageList = fs.readdirSync(PAGES_PATH);
@@ -20,11 +21,11 @@ export async function dev(open) {
         else if (pageList.length === 1) {
             const page = pageList[0];
             userOptions = {
-                entry: `/${page}/${mpaConfig.entry}`,
-                template: `./${page}/${mpaConfig.template}`,
+                entry: `/${page}/${entry}`,
+                template: `./${page}/${template}`,
                 inject: {
                     data: {
-                        injectScript: `${INJECTSCRIPT}${mpaConfig.injectScript}`
+                        injectScript: `${INJECTSCRIPT}${injectScript}`
                     }
                 }
             };
@@ -33,12 +34,12 @@ export async function dev(open) {
             userOptions = {
                 pages: pageList.map(page => {
                     return {
-                        entry: `/${page}/${mpaConfig.entry}`,
+                        entry: `/${page}/${entry}`,
                         filename: `${page}.html`,
-                        template: `./src/pages/${page}/${mpaConfig.template}`,
+                        template: `./src/pages/${page}/${template}`,
                         injectOptions: {
                             data: {
-                                injectScript: `${INJECTSCRIPT}${mpaConfig.injectScript}`
+                                injectScript: `${INJECTSCRIPT}${injectScript}`
                             }
                         }
                     };

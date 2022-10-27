@@ -1,4 +1,5 @@
+import { IMpaConfig } from '../types/index.js';
 declare const isExist: (path: string) => boolean;
-declare const copy: (srcDir: string, desDir: string) => void;
+declare const resolveConfig: (command: 'dev' | 'build', mode: 'development' | 'production' | string) => Promise<IMpaConfig>;
 declare const ckeckNodeVersion: (targetNodeVersion: string) => boolean;
-export { isExist, copy, ckeckNodeVersion };
+export { isExist, resolveConfig, ckeckNodeVersion };

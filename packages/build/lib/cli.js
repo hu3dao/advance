@@ -27,4 +27,14 @@ program
     const { create } = await import('./commands/create.js');
     create(options);
 });
-program.parse();
+// 兼容npm
+let userOptions = [];
+if (process.env.npm_config_argv) {
+    userOptions = JSON.parse(process.env.npm_config_argv).original.slice(2);
+}
+else {
+    userOptions = process.argv.slice(2);
+}
+// 合并去重
+const argv = Array.from(new Set([...process.argv, ...userOptions]));
+program.parse(argv);

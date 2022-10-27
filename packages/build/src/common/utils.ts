@@ -1,30 +1,27 @@
 import fs from 'fs'
-import path from 'path'
-import {NODE_VERSION} from './constant.js'
+import { pathToFileURL } from 'node:url'
+import {NODE_VERSION, MPA_CONFIG_FILE} from './constant.js'
+import {IMpaConfig} from '../types/index.js'
 
 // 判断文件是否存在
 const isExist = (path: string) => {
   return fs.existsSync(path)
 }
 
-// 复制
-const copy = (srcDir: string, desDir: string) => {
-  const sourceFile = fs.readdirSync(srcDir, { withFileTypes: true })
-  for (const file of sourceFile) {
-    // 源文件 地址+文件名
-    const srcFile = path.resolve(srcDir, file.name)
-    // 目标文件
-    const tagFile = path.resolve(desDir, file.name)
-    // 文件是目录且未创建
-    if (file.isDirectory() && !fs.existsSync(tagFile)) {
-      fs.mkdirSync(tagFile)
-      copy(srcFile, tagFile)
-    } else if (file.isDirectory() && fs.existsSync(tagFile)) {
-      // 文件时目录且已存在
-      copy(srcFile, tagFile)
+// 读取配置文件
+const resolveConfig = async (command: 'dev'|'build', mode:'development'|'production'|string): Promise<IMpaConfig> => {
+  try {
+    const res = (await import(pathToFileURL(MPA_CONFIG_FILE).href)).default
+    if(typeof res === 'function') {
+      return res({command, mode})
+    } else if(typeof res === 'object') {
+      return res
+    } else {
+      return {}
     }
-    !file.isDirectory() && fs.copyFileSync(srcFile, tagFile, fs.constants.COPYFILE_FICLONE)
-  }
+  } catch(error) {
+    return {}
+  } 
 }
 
 // 判断node版本是否符合条件
@@ -50,6 +47,6 @@ const ckeckNodeVersion = (targetNodeVersion: string) => {
 
 export {
   isExist,
-  copy,
+  resolveConfig,
   ckeckNodeVersion
 }
