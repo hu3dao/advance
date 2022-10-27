@@ -1,6 +1,6 @@
 import { build as viteBuild } from 'vite';
 import path from 'path';
-import { CWD, INJECTSCRIPT, PAGES_PATH, configFile } from '../common/constant.js';
+import { CWD, INJECTSCRIPT, configFile } from '../common/constant.js';
 import fs from 'fs';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import { deleteSync } from 'del';
@@ -20,7 +20,7 @@ const copy = (copyStatic) => {
     });
 };
 // 打包操作
-const compile = (page, template, entry, injectScript) => {
+const compile = (page, PAGES_PATH, template, entry, injectScript) => {
     return new Promise(async (resolve, reject) => {
         try {
             // 不是文件夹的直接跳过
@@ -67,20 +67,21 @@ const compile = (page, template, entry, injectScript) => {
         }
     });
 };
-export async function build({ all, pages }) {
-    const buildPages = all ? fs.readdirSync(PAGES_PATH) : pages;
+export async function build({ all, page }) {
+    const { root = 'src/pages', template = 'index.html', entry = 'main.ts', injectScript = '', copyStatic } = await resolveConfig('build', 'production');
+    const PAGES_PATH = path.resolve(CWD, root);
+    const buildPages = all ? fs.readdirSync(PAGES_PATH) : page;
     if (!Array.isArray(buildPages)) {
         console.log(chalk.red('请输入要打包的页面'));
         return;
     }
-    const { template = 'index.html', entry = 'main.ts', injectScript = '', copyStatic } = await resolveConfig('build', 'production');
     // 递归实现按顺序打包
     const runner = async () => {
         if (!buildPages || !buildPages.length)
             return;
         const page = buildPages.shift();
         try {
-            await compile(page, template, entry, injectScript);
+            await compile(page, PAGES_PATH, template, entry, injectScript);
         }
         catch (error) {
         }

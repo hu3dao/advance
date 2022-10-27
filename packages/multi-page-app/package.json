@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "adv-build dev",
     "build": "adv-build build",
-    "create": "adv-build create --temp src/pages/page-1"
+    "create": "adv-build create  --temp src/pages/page-1"
   },
   "dependencies": {
     "@vitejs/plugin-legacy": "^2.2.0",

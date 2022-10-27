@@ -1,6 +1,5 @@
 import { resolve } from 'path'
 import { isExist } from './utils.js'
-import { fileURLToPath, pathToFileURL } from 'node:url'
 
 // 当前Node.js进程执行时的文件夹地址
 const CWD = process.cwd()
@@ -21,9 +20,6 @@ if (isExist(configFileOfTs)) {
   configFile = configFileOfJs
 }
 
-// 模板的路径
-const TEMPLATE_PATH = resolve(fileURLToPath(import.meta.url), '../../../template')
-
 const MPA_CONFIG_FILE = resolve(CWD, 'mpa.config.mjs')
 
 // NODE的版本
@@ -36,7 +32,6 @@ export {
   PAGES_PATH,
   INJECTSCRIPT,
   configFile, // vite配置文件的路径
-  TEMPLATE_PATH,
   MPA_CONFIG_FILE,
   NODE_VERSION,
   CAN_USE_FS_CP_NODE_VERSION

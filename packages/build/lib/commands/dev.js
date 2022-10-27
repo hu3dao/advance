@@ -1,5 +1,5 @@
 import { createServer } from 'vite';
-import { PAGES_PATH, INJECTSCRIPT, configFile } from '../common/constant.js';
+import { INJECTSCRIPT, configFile, CWD } from '../common/constant.js';
 import { resolve } from 'path';
 import fs from 'fs';
 import { createHtmlPlugin } from 'vite-plugin-html';
@@ -7,7 +7,8 @@ import { isExist, resolveConfig } from '../common/utils.js';
 export async function dev(open) {
     try {
         let openPath = false;
-        const { template = 'index.html', entry = 'main.ts', injectScript = '' } = await resolveConfig('dev', 'development');
+        const { root = 'src/pages', template = 'index.html', entry = 'main.ts', injectScript = '' } = await resolveConfig('dev', 'development');
+        const PAGES_PATH = resolve(CWD, root);
         if (open && isExist(resolve(PAGES_PATH, `./${open}/${template}`))) {
             openPath = `/${open}/${template}`;
         }

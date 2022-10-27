@@ -1,4 +1,4 @@
-export declare function build({ all, pages }: {
+export declare function build({ all, page }: {
     all?: boolean;
-    pages?: string[];
+    page?: string[];
 }): Promise<void>;
