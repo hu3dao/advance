@@ -22,7 +22,7 @@ export default defineConfig({
     })
   ],
   server: {
-    // open: true
+    host: 'm.dev.zhenaihn.com'
   },
   resolve: {
     alias: {

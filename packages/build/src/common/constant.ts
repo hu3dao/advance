@@ -27,11 +27,18 @@ const TEMPLATE_PATH = resolve(fileURLToPath(import.meta.url), '../../../template
 const MPA_CONFIG_FILE = resolve(CWD, 'mpa.config.mjs')
 const mpaConfig = await (async () => {
   try {
-    return (await import(pathToFileURL(MPA_CONFIG_FILE).href)).default
+    const res = (await import(pathToFileURL(MPA_CONFIG_FILE).href)).default
+    console.log(res);
+    return res
   } catch (error) {
     return {}
   }
 })()
+
+// NODE的版本
+const NODE_VERSION = process.version
+// 能够使用fs模块cp函数的NODE版本
+const CAN_USE_FS_CP_NODE_VERSION = '16.7.0'
 
 export {
   CWD,
@@ -39,5 +46,7 @@ export {
   INJECTSCRIPT,
   configFile, // vite配置文件的路径
   TEMPLATE_PATH,
-  mpaConfig
+  mpaConfig,
+  NODE_VERSION,
+  CAN_USE_FS_CP_NODE_VERSION
 }

@@ -1,6 +1,6 @@
 import path from 'path';
-import { CWD, PAGES_PATH, TEMPLATE_PATH } from '../common/constant.js';
-import { copy, isExist } from '../common/utils.js';
+import { CWD, PAGES_PATH, TEMPLATE_PATH, CAN_USE_FS_CP_NODE_VERSION } from '../common/constant.js';
+import { isExist, ckeckNodeVersion } from '../common/utils.js';
 import fs from 'fs';
 import chalk from 'chalk';
 export async function create({ names, temp }) {
@@ -19,8 +19,12 @@ export async function create({ names, temp }) {
             console.log(chalk.red('模板不存在'));
             return;
         }
-        fs.mkdirSync(sourceDir);
-        copy(template, sourceDir);
-        console.log(chalk.green(`${name}创建成功`));
+        if (ckeckNodeVersion(CAN_USE_FS_CP_NODE_VERSION)) {
+            fs.cpSync(template, sourceDir, { recursive: true });
+            console.log(chalk.green(`${name}创建成功`));
+        }
+        else {
+            console.error(chalk.red(`node版本需要>=${CAN_USE_FS_CP_NODE_VERSION}`));
+        }
     });
 }
