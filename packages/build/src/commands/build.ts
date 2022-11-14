@@ -1,98 +1,83 @@
-import { build as viteBuild } from 'vite'
-import path from 'path'
-import { CWD, INJECTSCRIPT, configFile } from '../common/constant.js'
-import fs from 'fs'
-import { createHtmlPlugin } from 'vite-plugin-html'
-import { deleteSync } from 'del'
-import { isExist, resolveConfig } from '../common/utils.js'
-import chalk from 'chalk'
-import { ICopyStatic, IMpaConfig } from '../types/index.js'
+import { build as viteBuild } from "vite";
+import path from "path";
+import { CWD, configFile } from "../common/constant.js";
+import fs from "fs";
+import { deleteSync } from "del";
+import { isExist, resolveConfig } from "../common/utils.js";
+import chalk from "chalk";
+import { ICopyStatic } from "../types/index.js";
 
 // 拷贝静态资源
 const copy = (copyStatic: ICopyStatic[] | undefined) => {
-  if (!copyStatic) return
-  copyStatic.forEach(dir => {
-    const source = path.resolve(CWD, dir.from)
-    const destination = path.resolve(CWD, dir.to)
+  if (!copyStatic) return;
+  copyStatic.forEach((dir) => {
+    const source = path.resolve(CWD, dir.from);
+    const destination = path.resolve(CWD, dir.to);
     if (!isExist(source)) {
-      return
+      return;
     }
-    fs.cpSync(path.resolve(CWD, dir.from), path.resolve(CWD, dir.to), { recursive: true })
-  })
-}
+    fs.cpSync(source, destination, { recursive: true });
+  });
+};
 // 打包操作
-const compile = (page: string, PAGES_PATH: string, template: string, entry: string, injectScript: string) => {
+const compile = (page: string, PAGES_PATH: string) => {
   return new Promise(async (resolve, reject) => {
     try {
       // 不是文件夹的直接跳过
       if (!fs.statSync(path.resolve(PAGES_PATH, `./${page}`)).isDirectory()) {
-        reject()
-        return
+        reject();
+        return;
       }
       console.log(chalk.green(`开始打包${page}`));
-      const entry = path.resolve(PAGES_PATH, `./${page}/${template}`)
-      // 判断入口文件是否存在
-      if (!isExist(entry)) {
-        console.log(chalk.red(`${page}的入口文件不存在`));
-        reject()
-        return
-      }
-      const outDir = path.resolve(CWD, `./dist/${page}`)
+      const outDir = path.resolve(CWD, `./dist/${page}`);
       // 删除旧的打包资源
-      deleteSync(outDir)
+      deleteSync(outDir);
       await viteBuild({
         configFile,
         root: path.resolve(PAGES_PATH, page),
-        base: './',
-        plugins: [
-          createHtmlPlugin({
-            entry: `/${entry}`,
-            template: `${template}`,
-            inject: {
-              data: {
-                injectScript: `${INJECTSCRIPT}${injectScript}`
-              }
-            }
-          })
-        ],
+        base: "./",
         build: {
-          outDir
-        }
-      })
+          outDir,
+        },
+      });
       console.log(chalk.green(`${page}打包成功`));
-      resolve(`${page}打包成功`)
+      resolve(`${page}打包成功`);
     } catch (err) {
       console.log(chalk.red(err));
-      reject(err)
+      reject(err);
     }
-  })
-}
-export async function build({ all, page, mode }: { all?: boolean, page?: string[], mode?: string }) {
-  const {
-    root = 'src/pages',
-    template = 'index.html',
-    entry = 'main.ts',
-    injectScript = '',
-    copyStatic
-  } = await resolveConfig('build', mode || 'production')
-  const PAGES_PATH = path.resolve(CWD, root)
-  const buildPages = all ? fs.readdirSync(PAGES_PATH) : page
+  });
+};
+export async function build({
+  all,
+  page,
+  mode,
+}: {
+  all?: boolean;
+  page?: string[];
+  mode?: string;
+}) {
+  const { root = "src/pages", copyStatic } = await resolveConfig(
+    "build",
+    mode || "production"
+  );
+  const PAGES_PATH = path.resolve(CWD, root);
+  const buildPages = all ? fs.readdirSync(PAGES_PATH) : page;
   if (!Array.isArray(buildPages)) {
-    console.log(chalk.red('请输入要打包的页面'));
-    return
+    console.log(chalk.red("请输入要打包的页面"));
+    return;
   }
 
   // 递归实现按顺序打包
   const runner = async () => {
-    if (!buildPages || !buildPages.length) return
-    const page = buildPages.shift() as string
+    if (!buildPages || !buildPages.length) return;
+    const page = buildPages.shift() as string;
     try {
-      await compile(page, PAGES_PATH, template, entry, injectScript)
-    } catch (error) {
-    }
-    runner()
-  }
-  runner()
+      await compile(page, PAGES_PATH);
+    } catch (error) {}
+    runner();
+  };
+  runner();
   // 拷贝文件
-  copy(copyStatic)
+  copy(copyStatic);
 }

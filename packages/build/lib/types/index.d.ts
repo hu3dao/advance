@@ -4,8 +4,5 @@ export interface ICopyStatic {
 }
 export interface IMpaConfig {
     root?: string;
-    entry?: string;
-    template?: string;
-    injectScript?: string;
     copyStatic?: ICopyStatic[];
 }

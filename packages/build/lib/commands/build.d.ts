@@ -1,4 +1,4 @@
-export declare function build({ all, page, mode }: {
+export declare function build({ all, page, mode, }: {
     all?: boolean;
     page?: string[];
     mode?: string;
