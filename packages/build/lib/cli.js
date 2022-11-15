@@ -1,6 +1,7 @@
 import { Command } from "commander";
+import { cliVersion } from "./index.js";
 const program = new Command();
-// program.version(Pkg.version);
+program.version(`@za-build/project-vite ${cliVersion}`);
 program
     .command("dev") // 注册dev命令
     .description("Run dev server") // 对dev命令的描述
