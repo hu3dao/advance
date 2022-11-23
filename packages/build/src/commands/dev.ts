@@ -24,6 +24,7 @@ export async function dev({
     const server = await createServer({
       configFile,
       root: PAGES_PATH,
+      mode: mode || "development",
       server: {
         open: openPath,
       },

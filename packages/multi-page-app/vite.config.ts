@@ -29,6 +29,7 @@ export default defineConfig({
     //   },
     // }),
   ],
+  envDir: resolve(__dirname, ""),
   server: {
     host: "m.dev.zhenaihn.com",
   },

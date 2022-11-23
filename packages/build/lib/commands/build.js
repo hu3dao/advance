@@ -19,7 +19,7 @@ const copy = (copyStatic) => {
     });
 };
 // 打包操作
-const compile = (page, PAGES_PATH) => {
+const compile = (page, PAGES_PATH, mode) => {
     return new Promise(async (resolve, reject) => {
         try {
             // 不是文件夹的直接跳过
@@ -35,6 +35,7 @@ const compile = (page, PAGES_PATH) => {
                 configFile,
                 root: path.resolve(PAGES_PATH, page),
                 base: "./",
+                mode,
                 build: {
                     outDir,
                 },
@@ -62,7 +63,7 @@ export async function build({ all, page, mode, }) {
             return;
         const page = buildPages.shift();
         try {
-            await compile(page, PAGES_PATH);
+            await compile(page, PAGES_PATH, mode || "production");
         }
         catch (error) { }
         runner();

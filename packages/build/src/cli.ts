@@ -9,6 +9,7 @@ program
   .description("Run dev server") // 对dev命令的描述
   .option("--open <open>", "auto open page of url", false) // 定义open选项，默认是false，用于指定启动dev-server时自动打开哪个页面
   .option("--mode <mode>") // 当前的模式
+  .allowUnknownOption() // 允许未知选项
   .action(async (options) => {
     // 当用户输入dev命令时的回调，它会把上面定义的option注入到这个回调函数中
     const { dev } = await import("./commands/dev.js"); // 我们在这里异步引入dev函数，执行
@@ -21,6 +22,7 @@ program
   .option("--all", "build all page", false) // 定义all选项，默认是false，用于指定是否打包全部的页面
   .option("--page <page...>", "build page list") // 定义pages选项，它是可变长参数，最终会将我们输入的参数解析成数组，用于指定需要打包的页面
   .option("--mode <mode>") // 当前的模式
+  .allowUnknownOption() // 允许未知选项
   .action(async (options) => {
     // 当用户输入build命令时的回调，它会把上面定义的option注入到这个回调函数中
     const { build } = await import("./commands/build.js"); // 我们在这里异步引入build函数，执行
@@ -32,6 +34,7 @@ program
   .description("Create pages base on template")
   .option("--names <names...>", "create pages name")
   .option("--temp <temp>", "target template")
+  .allowUnknownOption() // 允许未知选项
   .action(async (options) => {
     const { create } = await import("./commands/create.js");
     create(options);
@@ -65,5 +68,4 @@ if (process.env.npm_config_argv) {
 const argv = Array.from(
   new Set([...process.argv.slice(0, 3), ...parseArgs(userOptions)])
 );
-
 program.parse(argv);
