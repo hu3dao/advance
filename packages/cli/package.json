@@ -1,12 +1,18 @@
 {
-  "name": "@advance/cli",
+  "name": "create-vite-mpa",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "create-vite-mpa": "./index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "inquirer": "^8.0.0"
+  }
 }

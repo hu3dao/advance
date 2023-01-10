@@ -8,14 +8,22 @@ const CWD = process.cwd();
 const PAGES_PATH = resolve(CWD, "src/pages");
 
 // 在根目录下查找是否有vite的配置文件
-const configFileOfTs = resolve(CWD, "vite.config.ts");
-const configFileOfJs = resolve(CWD, "vite.config.js");
 let configFile: string | false = false;
-if (isExist(configFileOfTs)) {
-  configFile = configFileOfTs;
-} else if (isExist(configFileOfJs)) {
-  configFile = configFileOfJs;
-}
+// vite可识别的配置文件的文件名
+const DEFAULT_CONFIG_FILES = [
+  "vite.config.js",
+  "vite.config.mjs",
+  "vite.config.ts",
+  "vite.config.cjs",
+  "vite.config.mts",
+  "vite.config.cts",
+];
+DEFAULT_CONFIG_FILES.forEach((file) => {
+  const filePath = resolve(CWD, file);
+  if (isExist(filePath)) {
+    configFile = filePath;
+  }
+});
 
 const MPA_CONFIG_FILE = resolve(CWD, "mpa.config.mjs");
 
