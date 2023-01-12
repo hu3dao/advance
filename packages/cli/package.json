@@ -1,18 +1,32 @@
 {
-  "name": "create-vite-mpa",
+  "name": "@advance/cli",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "bin": {
-    "create-vite-mpa": "./index.js"
+    "ad-cli": "bin/bin.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "tsup --watch",
+    "build": "tsup"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "inquirer": "^8.0.0"
+    "chalk": "^5.2.0",
+    "commander": "^9.5.0",
+    "fast-glob": "^3.2.12",
+    "fs-extra": "^11.1.0",
+    "ora": "^6.1.2",
+    "prompts": "^2.4.2",
+    "validate-npm-package-name": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.0",
+    "@types/node": "^18.11.18",
+    "@types/prompts": "^2.4.2",
+    "@types/validate-npm-package-name": "^4.0.0",
+    "tsup": "^6.5.0"
   }
 }

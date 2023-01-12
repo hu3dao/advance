@@ -1,47 +1,64 @@
 # 从零单排：前端进阶之路
+
 ## 前言
+
 一入前端深似海，从此头发是路人，这一句话道出了多少前端的内心苦楚。假如学习前端是在爬一座山，那这座山大抵是乔戈里峰（世界第二高峰），不由得让人想吐槽一句“MMP”。
+
 ## 目标
+
 吐槽完就该说下本系列文章的目标，暂定分四步走：
 
-1、使用pnpm创建monorepo（管理本系列所有代码）；
+1、使用 pnpm 创建 monorepo（管理本系列所有代码）；
 
-2、基于vite+vue3搭建一个多入口的移动端项目（支持单入口、多入口和全部入口的打包）；
+2、基于 vite+vue3 搭建一个多入口的移动端项目（支持单入口、多入口和全部入口的打包）；
 
 3、将打包部分的代码抽离成插件并发布；
 
 4、创建一个简易的脚手架并发布
+
 ## 收获
+
 虚假的收获：掀开“前端工程化”的面纱，一窥她的容貌（前端工程化的概念是极为庞大的，本系列文章只能算是沧海一粟，但是能让你在这条道路踏出第一步）
 
 真实的收获：简历的一个亮点；面试的时候的谈资；记忆宫殿（就是怕忘了。。。）
+
 ## 计划
+
 每一个目标都会输出一份文档，方便读者自由找到想要了解的部分
+
 ## 环境及工具
-+ 包管理工具：[pnpm](https://pnpm.io/)
-+ 开发工具：[vscode](https://code.visualstudio.com/)
-+ 开发环境：[node](https://nodejs.org/en/)
-+ 构建工具：[vite](https://vitejs.dev/)
-+ 代码仓库：[github](https://github.com/)
-+ ...
+
+- 包管理工具：[pnpm](https://pnpm.io/)
+- 开发工具：[vscode](https://code.visualstudio.com/)
+- 开发环境：[node](https://nodejs.org/en/)
+- 构建工具：[vite](https://vitejs.dev/)
+- 代码仓库：[github](https://github.com/)
+- ...
+
 ## 总结
-我们的目标是：搞事，搞事，还是TM的搞事
+
+我们的目标是：搞事，搞事，还是 TM 的搞事
 
 本系列的代码都已上传到[github](https://github.com/hu3dao/advance)，如有需要可自行下载
 
 如果你觉得文章不错，不妨：
-+ 点赞-让更多人也能够看到这篇文章
-+ 关注-防止找不到我了。。。
+
+- 点赞-让更多人也能够看到这篇文章
+- 关注-防止找不到我了。。。
+
 ## 文档
+
 [从零单排：前端进阶之路](./README.md)系列全部文章
-1. [从零单排：使用pnpm创建monorepo](./monorepo.md)
-2. [从零单排：基于vite+vue3搭建一个多入口的移动端项目（支持单入口、多入口和全部入口的打包）](./packages/multi-page-app/README.md)
-3. [从零单排：基于vite+vue3实现多入口打包插件](./packages/build/README.md)
-4. 从零单排：搭建一个属于自己的脚手架---敬请期待
+
+1. [从零单排：使用 pnpm 创建 monorepo](./monorepo.md)
+2. [从零单排：基于 vite+vue3 搭建一个多入口的移动端项目（支持单入口、多入口和全部入口的打包）](./packages/multi-page-app/README.md)
+3. [从零单排：基于 vite+vue3 实现多入口打包插件](./packages/build/README.md)
+4. [从零单排：搭建一个属于自己的脚手架](./packages/cli/README.zh-CN.md)
 
 [打个广告]()
-+ [移动端兼容性问题及解决方案汇总](https://juejin.cn/post/7103835385280593957)
-+ [基于vue2.x+better-scroll实现的下拉刷新上拉加载组件](https://juejin.cn/post/7104597819599618062)
-+ [webpack5学习指南-入门篇](https://juejin.cn/post/7108569190230917128)
-+ [从零创建vue3+vite+ts项目](https://juejin.cn/post/7128224846210662436)
-+ [如何“优雅”的实现自定义样式弹幕功能](https://juejin.cn/post/7135023569259462692)
+
+- [移动端兼容性问题及解决方案汇总](https://juejin.cn/post/7103835385280593957)
+- [基于 vue2.x+better-scroll 实现的下拉刷新上拉加载组件](https://juejin.cn/post/7104597819599618062)
+- [webpack5 学习指南-入门篇](https://juejin.cn/post/7108569190230917128)
+- [从零创建 vue3+vite+ts 项目](https://juejin.cn/post/7128224846210662436)
+- [如何“优雅”的实现自定义样式弹幕功能](https://juejin.cn/post/7135023569259462692)
